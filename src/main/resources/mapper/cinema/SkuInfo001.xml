@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.suning.springboot001.dao.SkuInfoDao001">
+    <!--多对一 -->
+    <resultMap id="resultMap001" type="com.suning.springboot001.to.SkuInfoTo">
+        <result property="skuId" column="sku_id"></result>
+        <result property="name" column="sku_name"></result>
+        <!--指定javaType，不然不知道是什么实体-->
+        <association property="spuInfo" javaType="com.suning.springboot001.entity.SpuInfo">
+            <result property="spuId" column="spu_id"></result>
+            <result property="spuName" column="spu_name"></result>
+        </association>
+    </resultMap>
+
+    <!--一对多-->
+    <resultMap id="resultMap002" type="com.suning.springboot001.to.SpuInfoTo001">
+        <result column="spu_id" property="spuId"></result>
+        <collection property="skuInfoList" ofType="com.suning.springboot001.entity.SkuInfo">
+            <result property="skuId" column="sku_id"></result>
+            <result property="skuName" column="sku_name"></result>
+        </collection>
+    </resultMap>
+
+    <select id="selectByMap" resultType="com.suning.springboot001.entity.SkuInfo">
+        select *
+        from pms_sku_info
+        <where>
+            <if test="skuId!=null and skuId !=''">
+                and sku_id !=#{skuId}
+            </if>
+            <if test="spuId!=null and spuId !=''">
+                and spu_id=#{spuId}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectByList" resultType="com.suning.springboot001.entity.SkuInfo">
+        select *
+        from pms_sku_info
+        <if test="list !=null and list.size()!=0">
+            where sku_id in
+            <foreach collection="list" item="sku_id" open="(" close=") " separator=",">
+                #{sku_id}
+            </foreach>
+        </if>
+
+    </select>
+
+    <select id="selectLike" resultType="com.suning.springboot001.entity.SkuInfo">
+        select *
+        from pms_sku_info
+        where sku_Name like concat('%', #{skuName}, '%')
+    </select>
+
+    <insert id="insertList">
+        insert into pms_sku_info
+        (spu_id, sku_name)
+        values
+        <foreach collection="list" item="obj" separator=",">
+            (#{obj.spuId},#{obj.skuName})
+        </foreach>
+
+    </insert>
+
+    <select id="selectResultMap" resultMap="resultMap002">
+        select spu_id,sku_id,sku_name
+        from pms_sku_info;
+    </select>
+
+
+</mapper>

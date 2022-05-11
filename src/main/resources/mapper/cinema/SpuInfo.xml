@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suning.springboot001.dao.SpuInfoDao">
+    <resultMap id="SpuInfoTo" type="com.suning.springboot001.to.SpuInfoTo">
+        <id property="spuId" column="spu_id"/>
+        <result property="spuName" column="spu_name"/>
+        <collection property="skuInfoList" ofType="com.suning.springboot001.entity.SkuInfo">
+            <result property="skuId" column="sku_id"/>
+            <result property="skuName" column="sku_name"/>
+        </collection>
+    </resultMap>
+
+    <!--帮查询结果进行映射-->
+    <resultMap id="cinemaTo" type="com.suning.springboot001.to.CinemaTo">
+        <result property="cid" column="cid01"/>
+        <result property="name" column="name01"/>
+
+    </resultMap>
+
+
+    <select id="findSpuInfo" resultMap="SpuInfoTo">
+        SELECT
+            a.id spu_id,
+            a.spu_name,
+            b.sku_id,
+            b.sku_name
+        from pms_spu_info a
+                 INNER JOIN pms_sku_info b on a.id = b.spu_id
+
+    </select>
+
+
+</mapper>

@@ -1,0 +1,12 @@
+#最先加载Nacos配置
+spring:
+  application:
+    name: springcloud002
+  cloud:
+    nacos:
+      config:
+        server-addr: localhost:8848
+#       区分不同微服务
+        namespace: bcc9658b-1f3b-4e14-8084-907c2e5c7e63
+#       区分sit/pre/prod
+        group: group_11

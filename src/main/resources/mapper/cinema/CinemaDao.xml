@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suning.springboot001.dao.CinemaDao">
+    <!--帮查询结果进行映射-->
+    <resultMap id="cinemaTo" type="com.suning.springboot001.to.CinemaTo">
+        <result property="cid" column="cid01"/>
+        <result property="name" column="name01"/>
+
+    </resultMap>
+
+    <select id="selectInfo" resultMap="cinemaTo">
+        select a.cid cid01,b.name name01
+        from cinema a
+                 inner join hall b
+                            on a.cid = b.cid
+        where a.cid >= #{id}
+    </select>
+
+
+
+
+</mapper>
+

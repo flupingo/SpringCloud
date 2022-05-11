@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.suning.springboot001.dao.AccountDao">
+
+    <select id="selectByHashMap" resultType="com.suning.springboot001.entity.Account">
+        select *
+        from account where 1=1
+        <if test="money !=null and money!=''">
+            and money=#{money}
+        </if>
+    </select>
+
+    <select id="selectByParam" resultType="com.suning.springboot001.entity.Account">
+        select *
+        from account
+        where money = #{money1};
+    </select>
+
+    <update id="updateByMyId">
+        update account
+        set money=#{money},
+            uid=#{uid}
+        where id = #{id};
+    </update>
+
+    <select id="listByParams" resultType="com.suning.springboot001.entity.Account">
+        select *
+        from account
+        where uid in
+        <foreach collection="list" item="uid" open="(" close=")" separator=",">
+            #{uid}
+        </foreach>
+    </select>
+
+
+    <insert id="insertSingle">
+        insert into account (
+        <if test="uid !=null">
+            uid,
+        </if>
+        <if test="money !=null">
+            money
+        </if>
+        )values (
+        <if test="uid !=null">
+            #{uid},
+        </if>
+        <if test="money !=null">
+            #{money}
+        </if>
+        )
+    </insert>
+
+
+</mapper>

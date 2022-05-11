@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suning.springboot001.dao.SkunInfoDao">
+
+    <resultMap id="skuInfoTo" type="com.suning.springboot001.to.SkuInfoTo">
+        <result column="sku_id" property="skuId"></result>
+        <result column="sku_name" property="name"></result>
+        <association property="spuInfo" javaType="com.suning.springboot001.entity.SpuInfo">
+            <result column="spu_id" property="spuId"></result>
+            <result column="spu_name" property="spuName"></result>
+        </association>
+    </resultMap>
+
+    <select id="findSkuInfo" resultMap="skuInfoTo">
+        SELECT
+            a.id spu_id,
+            a.spu_name,
+            b.sku_id,
+            b.sku_name
+        from pms_spu_info a
+                 INNER JOIN pms_sku_info b on a.id = b.spu_id
+    </select>
+
+    <select id="findSkuMap" resultType="java.util.HashMap">
+        select *
+        from pms_sku_info
+        where sku_id = #{skuId}
+
+    </select>
+
+    <select id="findSkuInfo001" resultMap="skuInfoTo">
+        SELECT
+            a.id spu_id,
+            a.spu_name,
+            b.sku_id,
+            b.sku_name
+        from pms_spu_info a
+                 INNER JOIN pms_sku_info b on a.id = b.spu_id
+        where b.sku_id = #{skuId}
+    </select>
+
+
+    <!--模糊匹配-->
+    <select id="findSku" resultType="com.suning.springboot001.to.SkuInfoTo">
+        select *
+        from pms_sku_info
+        where sku_name like concat('%' #{skuName} '%');
+
+    </select>
+
+    <select id="selectSku" resultType="com.suning.springboot001.entity.SkuInfo">
+        select *
+        from pms_sku_info
+        where sku_name like concat('%' #{skuName} '%');
+    </select>
+
+    <select id="selectByMap" resultType="com.suning.springboot001.entity.SkuInfo">
+        select *
+        from pms_sku_info
+        where sku_name like concat('%' #{skuName} '%');
+
+    </select>
+
+    <select id="selectIf" resultType="com.suning.springboot001.entity.SkuInfo">
+        select *
+        from pms_sku_info where 1=1
+        <if test="skuName !=null and skuName!=''">
+            and sku_name like concat('%' #{skuName} '%')
+        </if>
+    </select>
+
+    <!--map传参-->
+    <select id="selectWhereAndIf" resultType="com.suning.springboot001.entity.SkuInfo">
+        select *
+        from pms_sku_info
+        <where>
+            <if test="skuName !=null and skuName!=''">
+                and sku_name like concat('%' #{skuName} '%')
+            </if>
+            <if test="">
+                and spu_Id=#{spuId}
+            </if>
+        </where>
+    </select>
+
+
+    <select id="selectForEach" resultType="com.suning.springboot001.entity.SkuInfo">
+        select *
+        from pms_sku_info
+        <if test="list!=null and list.size()!=0">
+            where sku_id in
+            <foreach collection="list" open="(" close=")" separator="," item="id">
+                #{id}
+            </foreach>
+        </if>
+
+    </select>
+    <select id="selectForEachObject" resultType="com.suning.springboot001.entity.SkuInfo">
+        select *
+        from pms_sku_info
+        <if test="list !=null and list.size()!=0">
+            where sku_id in
+            <foreach collection="list" open="(" close=")" item="sku" separator=",">
+                #{sku.skuId}
+            </foreach>
+        </if>
+
+    </select>
+
+    <select id="selectByIds" resultType="com.suning.springboot001.entity.SkuInfo">
+        select *
+        from pms_sku_info
+        where sku_id in (#{skuIds})
+    </select>
+
+    <select id="selectByIds001" resultType="com.suning.springboot001.entity.SkuInfo">
+        select *
+        from pms_sku_info
+        where sku_id in (${skuIds})
+    </select>
+
+
+    <!--批量插入-->
+    <insert id="insertSkuList">
+        insert into pms_sku_info (spu_id,sku_name) values
+        <foreach collection="list" item="sku" separator=",">
+            (#{sku.spuId},#{sku.skuName})
+        </foreach>
+    </insert>
+
+    <select id="selectChoose" resultType="com.suning.springboot001.entity.SkuInfo">
+        select *
+        from pms_sku_info
+        <where>
+            <choose>
+                <when test="skuName!=null and skuName!=''">
+                    sku_name=#{skuName}
+                </when>
+                <when test="spuId!=0">
+                    spu_id=#{spuId}
+                </when>
+                <otherwise>
+                    spu_id=11
+                </otherwise>
+            </choose>
+        </where>
+
+    </select>
+
+
+</mapper>
